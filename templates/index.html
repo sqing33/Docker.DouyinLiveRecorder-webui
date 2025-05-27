@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DouyinLiveRecorder 配置</title>
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                margin: 20px;
+                background-color: #f4f7f6;
+                color: #333;
+            }
+            .container {
+                max-width: 900px;
+                margin: 0 auto;
+                background-color: #fff;
+                padding: 30px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            }
+            h1 {
+                color: #0056b3;
+                text-align: center;
+                margin-bottom: 30px;
+                font-size: 2em;
+            }
+            .tabs {
+                display: flex;
+                justify-content: center;
+                margin-bottom: 20px;
+                border-bottom: 2px solid #e1e1e1;
+            }
+            .tab-button {
+                padding: 10px 20px;
+                text-decoration: none;
+                color: #0056b3;
+                font-weight: bold;
+                border: 1px solid transparent;
+                border-bottom: none;
+                border-radius: 5px 5px 0 0;
+                transition: all 0.3s ease;
+            }
+            .tab-button:hover {
+                background-color: #e9ecef;
+            }
+            .tab-button.active {
+                background-color: #0056b3;
+                color: white;
+                border-color: #0056b3;
+            }
+            .config-section {
+                background-color: #f9f9f9;
+                border: 1px solid #e1e1e1;
+                border-radius: 6px;
+                padding: 20px;
+                margin-bottom: 25px;
+            }
+            h2 {
+                color: #0056b3;
+                margin-top: 0;
+                border-bottom: 2px solid #e1e1e1;
+                padding-bottom: 10px;
+                margin-bottom: 20px;
+                font-size: 1.5em;
+            }
+            h3 {
+                color: #007bff;
+                margin-top: 15px;
+                margin-bottom: 10px;
+                font-size: 1.2em;
+            }
+            .form-group {
+                margin-bottom: 15px;
+            }
+            label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: bold;
+                color: #555;
+            }
+            input[type="text"],
+            textarea {
+                width: calc(100% - 22px);
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                font-size: 1em;
+                box-sizing: border-box;
+                transition: border-color 0.3s;
+            }
+            input[type="text"]:focus,
+            textarea:focus {
+                border-color: #007bff;
+                outline: none;
+            }
+            button[type="submit"] {
+                background-color: #28a745;
+                color: white;
+                padding: 12px 25px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 1.1em;
+                transition: background-color 0.3s ease;
+                display: block;
+                width: 100%;
+                margin-top: 30px;
+            }
+            button[type="submit"]:hover {
+                background-color: #218838;
+            }
+        </style>
+</head>
+<body>
+    <div class="container">
+        <h1>DouyinLiveRecorder Configuration</h1>
+        <div class="tabs">
+                <a href="{{ url_for('url_config_page') }}" class="tab-button {% if active_tab == 'url_config' %}active{% endif %}">URL 配置</a>
+                <a href="{{ url_for('recording_settings_page') }}" class="tab-button {% if active_tab == 'recording_settings' %}active{% endif %}">录制设置</a>
+                <a href="{{ url_for('push_settings_page') }}" class="tab-button {% if active_tab == 'push_settings' %}active{% endif %}">推送配置</a>
+                <a href="{{ url_for('cookie_settings_page') }}" class="tab-button {% if active_tab == 'cookie_settings' %}active{% endif %}">Cookie</a>
+                <a href="{{ url_for('account_settings_page') }}" class="tab-button {% if active_tab == 'account_settings' %}active{% endif %}">账号密码</a>
+            </div>
+
+            {% if active_tab == 'url_config' %}
+            <div class="config-section">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2>URL Configuration (URL_config.ini)</h2>
+                    <button type="submit" style="margin: 0; width: auto; padding: 8px 15px;">保存 URL 配置</button>
+                </div>
+                <form action="{{ url_for('url_config_page') }}" method="post">
+                    <div class="form-group">
+                        <label for="url_config_content">编辑 URL (每行一个):</label>
+                        <textarea id="url_config_content" name="url_config_content" rows="15">{{ url_config_content }}</textarea>
+                    </div>
+                </form>
+                <form action="{{ url_for('start_recording') }}" method="post" style="margin-top: 20px;">
+                    <button type="submit" style="width: auto; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; font-size: 16px;">启动录制</button>
+                </form>
+            </div>
+            {% elif active_tab == 'recording_settings' %}
+            <div class="config-section">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2>录制设置 (config.ini - [Recording])</h2>
+                    <button type="submit" style="margin: 0; width: auto; padding: 8px 15px;">保存录制设置</button>
+                </div>
+                <form action="{{ url_for('recording_settings_page') }}" method="post">
+                    {% for key, value in config.items(section) %}
+                    <div class="form-group">
+                        <label for="{{ key }}">{{ key }}:</label>
+                        {% if key in ['是否跳过代理检测(是/否)', '保存文件夹是否以作者区分', '保存文件夹是否以时间区分', '保存文件夹是否以标题区分', '保存文件名是否包含标题', '是否去除名称中的表情符号', '是否使用代理ip(是/否)', '是否显示循环秒数', '是否显示直播源地址', '分段录制是否开启', '是否强制启用https录制', '录制完成后自动转为mp4格式', 'mp4格式重新编码为h264', '追加格式后删除原文件', '生成时间字幕文件', '是否录制完成后执行自定义脚本'] %}
+                        <select id="{{ key }}" name="{{ key }}" style="height: 38px; width: 200px;">
+                              <option value="是" {% if value == '是' %}selected{% endif %}>是</option>
+                              <option value="否" {% if value == '否' %}selected{% endif %}>否</option>
+                          </select>
+                        {% else %}
+                        <input type="text" id="{{ key }}" name="{{ key }}" value="{{ value }}">
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </form>
+            </div>
+            {% elif active_tab == 'push_settings' %}
+            <div class="config-section">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2>推送配置 (config.ini - [Push])</h2>
+                    <button type="submit" style="margin: 0; width: auto; padding: 8px 15px;">保存推送配置</button>
+                </div>
+                <form action="{{ url_for('push_settings_page') }}" method="post">
+                    {% for key, value in config.items(section) %}
+                    <div class="form-group">
+                        <label for="{{ key }}">{{ key }}:</label>
+                        {% if key in ['是否跳过代理检测(是/否)', '保存文件夹是否以作者区分', '保存文件夹是否以时间区分', '保存文件夹是否以标题区分', '保存文件名是否包含标题', '是否去除名称中的表情符号', '是否使用代理ip(是/否)', '是否显示循环秒数', '是否显示直播源地址', '分段录制是否开启', '是否强制启用https录制', '录制完成后自动转为mp4格式', 'mp4格式重新编码为h264', '追加格式后删除原文件', '生成时间字幕文件', '是否录制完成后执行自定义脚本'] %}
+                        <select id="{{ key }}" name="{{ key }}" style="height: 38px; width: 200px;">
+                              <option value="是" {% if value == '是' %}selected{% endif %}>是</option>
+                              <option value="否" {% if value == '否' %}selected{% endif %}>否</option>
+                          </select>
+                        {% else %}
+                        <input type="text" id="{{ key }}" name="{{ key }}" value="{{ value }}">
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </form>
+            </div>
+            {% elif active_tab == 'cookie_settings' %}
+            <div class="config-section">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2>Cookie (config.ini - [Cookie])</h2>
+                    <button type="submit" style="margin: 0; width: auto; padding: 8px 15px;">保存 Cookie</button>
+                </div>
+                <form action="{{ url_for('cookie_settings_page') }}" method="post">
+                    {% for key, value in config.items(section) %}
+                    <div class="form-group">
+                        <label for="{{ key }}">{{ key }}:</label>
+                        {% if key in ['是否跳过代理检测(是/否)', '保存文件夹是否以作者区分', '保存文件夹是否以时间区分', '保存文件夹是否以标题区分', '保存文件名是否包含标题', '是否去除名称中的表情符号', '是否使用代理ip(是/否)', '是否显示循环秒数', '是否显示直播源地址', '分段录制是否开启', '是否强制启用https录制', '录制完成后自动转为mp4格式', 'mp4格式重新编码为h264', '追加格式后删除原文件', '生成时间字幕文件', '是否录制完成后执行自定义脚本'] %}
+                        <select id="{{ key }}" name="{{ key }}" style="height: 38px; width: 200px;">
+                              <option value="是" {% if value == '是' %}selected{% endif %}>是</option>
+                              <option value="否" {% if value == '否' %}selected{% endif %}>否</option>
+                          </select>
+                        {% else %}
+                        <input type="text" id="{{ key }}" name="{{ key }}" value="{{ value }}">
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </form>
+            </div>
+            {% elif active_tab == 'account_settings' %}
+            <div class="config-section">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2>账号密码 (config.ini - [Account])</h2>
+                    <button type="submit" style="margin: 0; width: auto; padding: 8px 15px;">保存账号密码</button>
+                </div>
+                <form action="{{ url_for('account_settings_page') }}" method="post">
+                    {% for key, value in config.items(section) %}
+                    <div class="form-group">
+                        <label for="{{ key }}">{{ key }}:</label>
+                        {% if key in ['是否跳过代理检测(是/否)', '保存文件夹是否以作者区分', '保存文件夹是否以时间区分', '保存文件夹是否以标题区分', '保存文件名是否包含标题', '是否去除名称中的表情符号', '是否使用代理ip(是/否)', '是否显示循环秒数', '是否显示直播源地址', '分段录制是否开启', '是否强制启用https录制', '录制完成后自动转为mp4格式', 'mp4格式重新编码为h264', '追加格式后删除原文件', '生成时间字幕文件', '是否录制完成后执行自定义脚本'] %}
+                        <select id="{{ key }}" name="{{ key }}" style="height: 38px; width: 200px;">
+                              <option value="是" {% if value == '是' %}selected{% endif %}>是</option>
+                              <option value="否" {% if value == '否' %}selected{% endif %}>否</option>
+                          </select>
+                        {% else %}
+                        <input type="text" id="{{ key }}" name="{{ key }}" value="{{ value }}">
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </form>
+            </div>
+            {% endif %}
+    </div>
+</body>
+</html>

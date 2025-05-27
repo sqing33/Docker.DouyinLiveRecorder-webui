@@ -94,41 +94,44 @@ def display_info() -> None:
         try:
             sys.stdout.flush()  # 强制刷新输出缓冲区
             time.sleep(5)
-            if Path(sys.executable).name != 'pythonw.exe':
-                os.system(clear_command)
-            print(f"\r共监测{monitoring}个直播中", end=" | ")
-            print(f"同一时间访问网络的线程数: {max_request}", end=" | ")
-            print(f"是否开启代理录制: {'是' if use_proxy else '否'}", end=" | ")
+            # if Path(sys.executable).name != 'pythonw.exe':
+            #     os.system(clear_command)
+
+            info_parts = []
+            info_parts.append(f"共监测{monitoring}个直播中")
+            info_parts.append(f"同一时间访问网络的线程数: {max_request}")
+            info_parts.append(f"是否开启代理录制: {'是' if use_proxy else '否'}")
             if split_video_by_time:
-                print(f"录制分段开启: {split_time}秒", end=" | ")
+                info_parts.append(f"录制分段开启: {split_time}秒")
             else:
-                print(f"录制分段开启: 否", end=" | ")
+                info_parts.append(f"录制分段开启: 否")
             if create_time_file:
-                print(f"是否生成时间文件: 是", end=" | ")
-            print(f"录制视频质量为: {video_record_quality}", end=" | ")
-            print(f"录制视频格式为: {video_save_type}", end=" | ")
-            print(f"目前瞬时错误数为: {error_count}", end=" | ")
+                info_parts.append(f"是否生成时间文件: 是")
+            info_parts.append(f"录制视频质量为: {video_record_quality}")
+            info_parts.append(f"录制视频格式为: {video_save_type}")
+            info_parts.append(f"目前瞬时错误数为: {error_count}")
             now = time.strftime("%H:%M:%S", time.localtime())
-            print(f"当前时间: {now}")
+            info_parts.append(f"当前时间: {now}")
+            logger.info(" | ".join(info_parts))
 
             if len(recording) == 0:
                 time.sleep(5)
                 if monitoring == 0:
-                    print("\r没有正在监测和录制的直播")
+                    logger.info("没有正在监测和录制的直播")
                 else:
-                    print(f"\r没有正在录制的直播 循环监测间隔时间：{delay_default}秒")
+                    logger.info(f"没有正在录制的直播 循环监测间隔时间：{delay_default}秒")
             else:
                 now_time = datetime.datetime.now()
-                print("x" * 60)
+                logger.info("x" * 60)
                 no_repeat_recording = list(set(recording))
-                print(f"正在录制{len(no_repeat_recording)}个直播: ")
+                logger.info(f"正在录制{len(no_repeat_recording)}个直播: ")
                 for recording_live in no_repeat_recording:
                     rt, qa = recording_time_list[recording_live]
                     have_record_time = now_time - rt
-                    print(f"{recording_live}[{qa}] 正在录制中 {str(have_record_time).split('.')[0]}")
+                    logger.info(f"{recording_live}[{qa}] 正在录制中 {str(have_record_time).split('.')[0]}")
 
-                # print('\n本软件已运行：'+str(now_time - start_display_time).split('.')[0])
-                print("x" * 60)
+                # logger.info('\n本软件已运行：'+str(now_time - start_display_time).split('.')[0])
+                logger.info("x" * 60)
                 start_display_time = now_time
         except Exception as e:
             logger.error(f"错误信息: {e} 发生错误的行数: {e.__traceback__.tb_lineno}")

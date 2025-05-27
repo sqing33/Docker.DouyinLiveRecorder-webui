@@ -116,6 +116,7 @@
     <div class="container">
         <h1>DouyinLiveRecorder Configuration</h1>
         <div class="tabs">
+                <a href="{{ url_for('home_page') }}" class="tab-button {% if active_tab == 'home' %}active{% endif %}">首页</a>
                 <a href="{{ url_for('url_config_page') }}" class="tab-button {% if active_tab == 'url_config' %}active{% endif %}">URL 配置</a>
                 <a href="{{ url_for('recording_settings_page') }}" class="tab-button {% if active_tab == 'recording_settings' %}active{% endif %}">录制设置</a>
                 <a href="{{ url_for('push_settings_page') }}" class="tab-button {% if active_tab == 'push_settings' %}active{% endif %}">推送配置</a>
@@ -123,29 +124,38 @@
                 <a href="{{ url_for('account_settings_page') }}" class="tab-button {% if active_tab == 'account_settings' %}active{% endif %}">账号密码</a>
             </div>
 
-            {% if active_tab == 'url_config' %}
+            {% if active_tab == 'home' %}
             <div class="config-section">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h2>URL Configuration (URL_config.ini)</h2>
-                    <button type="submit" style="margin: 0; width: auto; padding: 8px 15px;">保存 URL 配置</button>
-                </div>
+                <h2>首页</h2>
+                <form action="{{ url_for('start_recording') }}" method="post" style="margin-bottom: 10px;">
+                    <button type="submit" style="width: auto; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; font-size: 16px;">启动录制</button>
+                </form>
+                <form action="{{ url_for('stop_recording') }}" method="post">
+                    <button type="submit" style="width: auto; padding: 10px 20px; background-color: #f44336; color: white; border: none; cursor: pointer; font-size: 16px;">停止录制</button>
+                </form>
+                <h3>日志输出:</h3>
+                <pre id="log_output" style="background-color: #eee; padding: 10px; border-radius: 5px; max-height: 400px; overflow-y: scroll;"></pre>
+            </div>
+            {% elif active_tab == 'url_config' %}
+            <div class="config-section">
                 <form action="{{ url_for('url_config_page') }}" method="post">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h2>URL Configuration (URL_config.ini)</h2>
+                        <button type="submit" style="margin: 0; width: auto; padding: 8px 15px;">保存 URL 配置</button>
+                    </div>
                     <div class="form-group">
                         <label for="url_config_content">编辑 URL (每行一个):</label>
                         <textarea id="url_config_content" name="url_config_content" rows="15">{{ url_config_content }}</textarea>
                     </div>
                 </form>
-                <form action="{{ url_for('start_recording') }}" method="post" style="margin-top: 20px;">
-                    <button type="submit" style="width: auto; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; font-size: 16px;">启动录制</button>
-                </form>
             </div>
             {% elif active_tab == 'recording_settings' %}
             <div class="config-section">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h2>录制设置 (config.ini - [Recording])</h2>
-                    <button type="submit" style="margin: 0; width: auto; padding: 8px 15px;">保存录制设置</button>
-                </div>
                 <form action="{{ url_for('recording_settings_page') }}" method="post">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h2>录制设置 (config.ini - [Recording])</h2>
+                        <button type="submit" style="margin: 0; width: auto; padding: 8px 15px;">保存录制设置</button>
+                    </div>
                     {% for key, value in config.items(section) %}
                     <div class="form-group">
                         <label for="{{ key }}">{{ key }}:</label>
@@ -163,11 +173,11 @@
             </div>
             {% elif active_tab == 'push_settings' %}
             <div class="config-section">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h2>推送配置 (config.ini - [Push])</h2>
-                    <button type="submit" style="margin: 0; width: auto; padding: 8px 15px;">保存推送配置</button>
-                </div>
                 <form action="{{ url_for('push_settings_page') }}" method="post">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h2>推送配置 (config.ini - [Push])</h2>
+                        <button type="submit" style="margin: 0; width: auto; padding: 8px 15px;">保存推送配置</button>
+                    </div>
                     {% for key, value in config.items(section) %}
                     <div class="form-group">
                         <label for="{{ key }}">{{ key }}:</label>
@@ -185,11 +195,11 @@
             </div>
             {% elif active_tab == 'cookie_settings' %}
             <div class="config-section">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h2>Cookie (config.ini - [Cookie])</h2>
-                    <button type="submit" style="margin: 0; width: auto; padding: 8px 15px;">保存 Cookie</button>
-                </div>
                 <form action="{{ url_for('cookie_settings_page') }}" method="post">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h2>Cookie (config.ini - [Cookie])</h2>
+                        <button type="submit" style="margin: 0; width: auto; padding: 8px 15px;">保存 Cookie</button>
+                    </div>
                     {% for key, value in config.items(section) %}
                     <div class="form-group">
                         <label for="{{ key }}">{{ key }}:</label>
@@ -207,11 +217,11 @@
             </div>
             {% elif active_tab == 'account_settings' %}
             <div class="config-section">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h2>账号密码 (config.ini - [Account])</h2>
-                    <button type="submit" style="margin: 0; width: auto; padding: 8px 15px;">保存账号密码</button>
-                </div>
                 <form action="{{ url_for('account_settings_page') }}" method="post">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h2>账号密码 (config.ini - [Account])</h2>
+                        <button type="submit" style="margin: 0; width: auto; padding: 8px 15px;">保存账号密码</button>
+                    </div>
                     {% for key, value in config.items(section) %}
                     <div class="form-group">
                         <label for="{{ key }}">{{ key }}:</label>
@@ -229,5 +239,100 @@
             </div>
             {% endif %}
     </div>
+    <script>
+        let lastLogContent = '';
+        function fetchLog() {
+            fetch('/log')
+                .then(response => response.text())
+                .then(data => {
+                    const logOutput = document.getElementById('log_output');
+                    if (data !== lastLogContent) {
+                        logOutput.innerText = data;
+                        logOutput.scrollTop = logOutput.scrollHeight;
+                        lastLogContent = data;
+                    }
+                })
+                .catch(error => console.error('Error fetching log:', error));
+        }
+
+        // Fetch log every 5 seconds
+        setInterval(fetchLog, 5000);
+
+        // Initial fetch
+        fetchLog();
+
+        // 为所有按钮添加点击反馈效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取所有表单
+            const forms = document.querySelectorAll('form');
+            
+            forms.forEach(form => {
+                form.addEventListener('submit', function(event) {
+                    // 获取表单中的按钮
+                    const button = this.querySelector('button[type="submit"]');
+                    if (button) {
+                        // 保存原始文本
+                        const originalText = button.textContent;
+                        // 更改按钮文本和样式
+                        button.textContent = '处理中...';
+                        button.style.opacity = '0.7';
+                        button.style.pointerEvents = 'none';
+                        
+                        // 添加一个隐藏的输入字段，用于在后端处理完成后识别
+                        const hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.name = 'button_clicked';
+                        hiddenInput.value = 'true';
+                        this.appendChild(hiddenInput);
+                        
+                        // 设置超时，如果服务器没有响应，恢复按钮状态
+                        setTimeout(function() {
+                            if (button) {
+                                button.textContent = originalText;
+                                button.style.opacity = '1';
+                                button.style.pointerEvents = 'auto';
+                            }
+                        }, 5000); // 5秒后恢复
+                    }
+                });
+            });
+        });
+
+        // 检查URL参数，显示操作成功提示
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const success = urlParams.get('success');
+            if (success === 'true') {
+                // 创建提示元素
+                const notification = document.createElement('div');
+                notification.textContent = '操作成功！';
+                notification.style.position = 'fixed';
+                notification.style.top = '20px';
+                notification.style.left = '50%';
+                notification.style.transform = 'translateX(-50%)';
+                notification.style.backgroundColor = '#4CAF50';
+                notification.style.color = 'white';
+                notification.style.padding = '10px 20px';
+                notification.style.borderRadius = '5px';
+                notification.style.zIndex = '1000';
+                notification.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+                
+                // 添加到页面
+                document.body.appendChild(notification);
+                
+                // 3秒后移除
+                setTimeout(function() {
+                    notification.style.opacity = '0';
+                    notification.style.transition = 'opacity 0.5s';
+                    setTimeout(function() {
+                        document.body.removeChild(notification);
+                    }, 500);
+                }, 3000);
+                
+                // 从URL中移除参数
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        };
+    </script>
 </body>
 </html>

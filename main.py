@@ -32,6 +32,7 @@ from streamget.proxy import ProxyDetector
 from streamget.utils import logger
 from streamget import utils
 from msg_push import (
+    gotify_push,
     dingtalk, xizhi, tg_bot, send_email, bark, ntfy
 )
 from ffmpeg_install import (
@@ -329,6 +330,7 @@ def adjust_max_request() -> None:
 
 def push_message(record_name: str, live_url: str, content: str) -> None:
     msg_title = push_message_title.strip() or "直播间状态更新通知"
+
     push_functions = {
         '微信': lambda: xizhi(xizhi_api_url, msg_title, content),
         '钉钉': lambda: dingtalk(dingtalk_api_url, content, dingtalk_phone_num, dingtalk_is_atall),
@@ -343,6 +345,9 @@ def push_message(record_name: str, live_url: str, content: str) -> None:
         'NTFY': lambda: ntfy(
             ntfy_api, title=msg_title, content=content, tags=ntfy_tags, action_url=live_url, email=ntfy_email
         ),
+        'GOTIFY': lambda: gotify_push(
+            gotify_server_url, gotify_app_token, msg_title, content
+        )  # 确保这里的逗号被移除或者下一行有新的推送方式
     }
 
     for platform, func in push_functions.items():
@@ -1699,6 +1704,8 @@ while True:
     ntfy_api = read_config_value(config, '推送配置', 'ntfy推送地址', "")
     ntfy_tags = read_config_value(config, '推送配置', 'ntfy推送标签', "tada")
     ntfy_email = read_config_value(config, '推送配置', 'ntfy推送邮箱', "")
+    gotify_server_url = read_config_value(config, '推送配置', 'gotify推送接口链接', "")
+    gotify_app_token = read_config_value(config, '推送配置', 'gotify推送token', "")
     push_message_title = read_config_value(config, '推送配置', '自定义推送标题', "直播间状态更新通知")
     begin_push_message_text = read_config_value(config, '推送配置', '自定义开播推送内容', "")
     over_push_message_text = read_config_value(config, '推送配置', '自定义关播推送内容', "")

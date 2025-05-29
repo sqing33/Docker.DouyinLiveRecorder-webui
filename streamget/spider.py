@@ -480,9 +480,12 @@ async def get_douyu_info_data(url: str, proxy_addr: OptionalStr = None, cookies:
     if match_rid:
         rid = match_rid.group(1)
     else:
-        rid = re.search('douyu.com/(.*?)(?=\\?|$)', url).group(1)
+        rid = re.search('douyu.com/(.*?)(?=\?|$)', url).group(1)
         html_str = await async_req(url=f'https://m.douyu.com/{rid}', proxy_addr=proxy_addr, headers=headers)
-        json_str = re.findall('<script id="vike_pageContext" type="application/json">(.*?)</script>', html_str)[0]
+        vike_page_context = re.findall('<script id="vike_pageContext" type="application/json">(.*?)</script>', html_str)
+        if not vike_page_context:
+            raise ValueError(f"Could not find vike_pageContext in HTML for {url}")
+        json_str = vike_page_context[0]
         json_data = json.loads(json_str)
         rid = json_data['pageProps']['room']['roomInfo']['roomInfo']['rid']
 

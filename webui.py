@@ -42,6 +42,25 @@ def home_page():
 
 recording_process = None
 
+# 启动webui时自动启动main.py录制进程
+
+
+def start_main_recording():
+    global recording_process
+    if recording_process is None or recording_process.poll() is not None:
+        try:
+            logger.info("WebUI启动时自动开始录制...")
+            recording_process = subprocess.Popen(['python', 'main.py'],
+                                                 cwd=os.getcwd())
+        except Exception as e:
+            logger.error(f"自动启动录制失败: {e}")
+
+
+# 在Flask启动前自动调用
+def run_with_auto_record():
+    start_main_recording()
+    app.run(host='0.0.0.0', port=5000)
+
 
 @app.route('/url_config', methods=['GET', 'POST'])
 def url_config_page():
@@ -59,36 +78,6 @@ def url_config_page():
     return render_template('index.html',
                            url_config_content=url_config_content,
                            active_tab='url_config')
-
-
-@app.route('/start_recording', methods=['POST'])
-def start_recording():
-    global recording_process
-    if recording_process is None or recording_process.poll() is not None:
-        try:
-            logger.info("开始录制...")
-            recording_process = subprocess.Popen(['python', 'main.py'],
-                                                 cwd=os.getcwd())
-            return redirect(url_for('home_page', success='true'))
-        except Exception as e:
-            return str(e), 500
-    return redirect(url_for('home_page'))
-
-
-@app.route('/stop_recording', methods=['POST'])
-def stop_recording():
-    global recording_process
-    if recording_process is not None and recording_process.poll() is None:
-        try:
-            logger.info("停止录制...")
-            recording_process.terminate()
-            recording_process.wait()
-            recording_process = None
-            logger.info("录制已停止。")
-            return redirect(url_for('home_page', success='true'))
-        except Exception as e:
-            return str(e), 500
-    return redirect(url_for('home_page'))
 
 
 @app.route('/recording_settings', methods=['GET', 'POST'])
@@ -180,4 +169,4 @@ def get_log():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    run_with_auto_record()

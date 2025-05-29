@@ -127,12 +127,6 @@
             {% if active_tab == 'home' %}
             <div class="config-section">
                 <h2>首页</h2>
-                <form action="{{ url_for('start_recording') }}" method="post" style="margin-bottom: 10px;">
-                    <button type="submit" style="width: auto; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; font-size: 16px;">启动录制</button>
-                </form>
-                <form action="{{ url_for('stop_recording') }}" method="post">
-                    <button type="submit" style="width: auto; padding: 10px 20px; background-color: #f44336; color: white; border: none; cursor: pointer; font-size: 16px;">停止录制</button>
-                </form>
                 <h3>日志输出:</h3>
                 <pre id="log_output" style="background-color: #eee; padding: 10px; border-radius: 5px; max-height: 400px; overflow-y: scroll;"></pre>
             </div>

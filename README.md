@@ -76,12 +76,13 @@ docker run -d \
 
 ### WebUI 界面
 
-![image.png](https://minio.916337.xyz:443/images/20250530001121.png)
-![image.png](https://minio.916337.xyz:443/images/20250530001201.png)
-![image.png](https://minio.916337.xyz:443/images/20250530001210.png)
-![image.png](https://minio.916337.xyz:443/images/20250530001218.png)
-![image.png](https://minio.916337.xyz:443/images/20250530001225.png)
-![image.png](https://minio.916337.xyz:443/images/20250530001231.png)
+![image](https://github.com/user-attachments/assets/ba5bebda-8276-4b54-888c-a20c4ce160a8)
+![image](https://github.com/user-attachments/assets/b206051a-79f1-4b89-a581-1e764970dd59)
+![image](https://github.com/user-attachments/assets/73a4bc56-b72a-46d2-be9c-8bbff8a21d53)
+![image](https://github.com/user-attachments/assets/9bcb0a54-cb94-401e-9394-640266c72ad5)
+![image](https://github.com/user-attachments/assets/87673fe8-4173-423f-bb1d-04beb9a01ba4)
+![image](https://github.com/user-attachments/assets/ab89e902-6bc8-4e46-bac8-2c02f34d1934)
+
 
 ---
 

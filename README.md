@@ -74,6 +74,15 @@ docker run -d \
 
 - 这样可直接通过 http://ip:5001 访问 WebUI。
 
+### WebUI 界面
+
+![image.png](https://minio.916337.xyz:443/images/20250530001121.png)
+![image.png](https://minio.916337.xyz:443/images/20250530001201.png)
+![image.png](https://minio.916337.xyz:443/images/20250530001210.png)
+![image.png](https://minio.916337.xyz:443/images/20250530001218.png)
+![image.png](https://minio.916337.xyz:443/images/20250530001225.png)
+![image.png](https://minio.916337.xyz:443/images/20250530001231.png)
+
 ---
 
 本项目为个人二次开发，仅供学习交流使用。如有问题欢迎提 issue。

@@ -18,13 +18,14 @@ DouyinLiveRecorder 是一款简易的多平台直播录制工具，基于 FFmpeg
 - 支持循环监测与自动录制
 - 支持自定义画质、推送、代理等配置
 - 录制文件自动保存
-- **新增 WebUI：可通过网页界面管理和修改配置文件，启动录制任务**
+- **新增 WebUI：可通过网页界面管理和修改配置文件**
 
 ### WebUI 简介
 
 - 访问方式：运行 `webui.py` 后，浏览器访问 [http://localhost:5000](http://localhost:5000)
 - 可视化管理：支持对直播间列表、录制设置、推送设置、Cookie、账号密码等配置的可视化管理
-- 一键启动录制，无需命令行操作
+- 新增 `Gotify` 渠道推送
+- WebUI 启动后会自动启动录制，无需手动点击按钮
 
 ### 使用说明
 
@@ -33,12 +34,17 @@ DouyinLiveRecorder 是一款简易的多平台直播录制工具，基于 FFmpeg
 3. 运行 WebUI：`python webui.py`
 4. 浏览器访问 [http://localhost:5000](http://localhost:5000) 进行配置和录制
 
+### Docker 镜像下载地址
+
+- DockerHub：`sqing33/douyin-live-recorder-webui`
+- Github：`ghcr.io/sqing33/douyin-live-recorder-webui`
+
 ### docker-compose 示例（适配 WebUI 版本）
 
 ```yaml
 services:
   recorder:
-    image: sqing33/douyin-live-recorder-webui:0.1 # 带WebUI的镜像
+    image: sqing33/douyin-live-recorder-webui # 带WebUI的镜像
     container_name: douyin-live-recorder-webui
     environment:
       - TERM=xterm-256color
@@ -63,7 +69,7 @@ docker run -d \
   -v /vol1/1000/Docker/douyin-live-recorder/logs:/app/logs \
   -v /vol3/1000/直播录像/douyin-live-recorder:/app/downloads \
   -p 5001:5000 \
-  sqing33/douyin-live-recorder-webui:0.1
+  sqing33/douyin-live-recorder-webui
 ```
 
 - 这样可直接通过 http://ip:5001 访问 WebUI。

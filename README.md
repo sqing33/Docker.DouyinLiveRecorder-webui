@@ -8,9 +8,10 @@
 
 DouyinLiveRecorder 是一款简易的多平台直播录制工具，基于 FFmpeg 实现，支持抖音、快手、虎牙、斗鱼、B 站、TikTok 等众多主流平台的直播录制。支持循环值守、推送通知、画质选择、代理设置等功能。
 
-### 原项目
+### 项目地址
 
-- Github：https://github.com/ihmily/DouyinLiveRecorder
+- 原项目 Github：https://github.com/ihmily/DouyinLiveRecorder
+- 本项目 DockerHub：https://hub.docker.com/r/sqing33/douyin-live-recorder-webui
 
 ### 主要功能
 

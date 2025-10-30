@@ -299,6 +299,83 @@ def gotify_push(server_url: str,
     return {"success": success, "error": error}
 
 
+def onebot_push(api_url: str,
+                qq_user_id: str,
+                token: str,
+                title: str = "",
+                content: str = "") -> Dict[str, Any]:
+    """
+    OneBot协议推送消息
+    :param api_url: OneBot API接口地址
+    :param qq_user_id: 接收消息的QQ号
+    :param token: 访问令牌
+    :param title: 消息标题
+    :param content: 消息内容
+    :return: 推送结果字典，包含成功和失败列表
+    """
+    success = []
+    error = []
+    api_list = api_url.replace('，', ',').split(',') if api_url.strip() else []
+    
+    for api in api_list:
+        # 格式化最终发送的消息
+        final_message = ""
+        if title:
+            final_message += f"{title}\n"
+        final_message += content if content else ""
+        
+        if not final_message.strip():
+            print(f'OneBot推送失败, 推送地址：{api}, 消息内容为空')
+            error.append(api)
+            continue
+        
+        # 拼接完整的请求URL
+        api_endpoint = f"{api.rstrip('/')}/send_private_msg"
+        
+        # 准备请求头和请求体
+        push_headers = {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json"
+        }
+        
+        payload = {
+            "user_id": int(qq_user_id),
+            "message": final_message
+        }
+        
+        try:
+            data = json.dumps(payload, ensure_ascii=False).encode('utf-8')
+            req = urllib.request.Request(api_endpoint,
+                                         data=data,
+                                         headers=push_headers,
+                                         method='POST')
+            response = opener.open(req, timeout=10)
+            response_data = json.loads(response.read().decode('utf-8'))
+            
+            # OneBot协议返回的数据结构: {"status": "ok", "retcode": 0, "data": {...}}
+            if response_data.get('status') == 'ok' or response_data.get('retcode') == 0:
+                success.append(api)
+            else:
+                error.append(api)
+                print(f'OneBot推送失败, 推送地址：{api}, 响应: {response_data}')
+        except urllib.error.HTTPError as e:
+            error.append(api)
+            try:
+                error_content = e.read().decode('utf-8')
+                print(
+                    f'OneBot推送失败, 推送地址：{api}, HTTP状态码: {e.code}, 错误信息: {error_content}'
+                )
+            except Exception as e_read:
+                print(
+                    f'OneBot推送失败, 推送地址：{api}, HTTP状态码: {e.code}, 读取错误内容失败: {e_read}'
+                )
+        except Exception as e:
+            error.append(api)
+            print(f'OneBot推送失败, 推送地址：{api}, 错误信息: {e}')
+    
+    return {"success": success, "error": error}
+
+
 if __name__ == '__main__':
     send_title = '直播通知'  # 标题
     send_content = '张三 开播了！'  # 推送内容
@@ -342,6 +419,13 @@ if __name__ == '__main__':
 
     # Gotify 推送通知
     # 替换成你的 Gotify 服务器 URL 和应用令牌
-    gotify_server_url = 'https://gotify.916337.xyz'  # 例如：http://192.168.1.100:8080
-    gotify_app_token = 'AcIKgM2cRAKQtIn'  # 在 Gotify 应用中生成
-    gotify_push(gotify_server_url, gotify_app_token, send_title, send_content)
+    # gotify_server_url = 'https://gotify.916337.xyz'  # 例如：http://192.168.1.100:8080
+    # gotify_app_token = 'AcIKgM2cRAKQtIn'  # 在 Gotify 应用中生成
+    # gotify_push(gotify_server_url, gotify_app_token, send_title, send_content)
+
+    # OneBot 推送通知
+    # 替换成你的 OneBot API 接口地址、接收消息的QQ号和访问令牌
+    onebot_api_url = 'http://192.168.1.100:6100'  # 例如：http://localhost:3000
+    onebot_qq_user_id = '1395251710'  # 接收消息的QQ号
+    onebot_token = 'qaqaa123'  # 访问令牌
+    onebot_push(onebot_api_url, onebot_qq_user_id, onebot_token, send_title, send_content)

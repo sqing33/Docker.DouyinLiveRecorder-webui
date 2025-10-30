@@ -33,6 +33,7 @@ from streamget.utils import logger
 from streamget import utils
 from msg_push import (
     gotify_push,
+    onebot_push,
     dingtalk, xizhi, tg_bot, send_email, bark, ntfy
 )
 from ffmpeg_install import (
@@ -332,6 +333,9 @@ def push_message(record_name: str, live_url: str, content: str) -> None:
     msg_title = push_message_title.strip() or "直播间状态更新通知"
 
     push_functions = {
+        'ONEBOT': lambda: onebot_push(
+            onebot_api_url, onebot_qq_user_id, onebot_token, msg_title, content
+        ),
         '微信': lambda: xizhi(xizhi_api_url, msg_title, content),
         '钉钉': lambda: dingtalk(dingtalk_api_url, content, dingtalk_phone_num, dingtalk_is_atall),
         '邮箱': lambda: send_email(
@@ -347,7 +351,7 @@ def push_message(record_name: str, live_url: str, content: str) -> None:
         ),
         'GOTIFY': lambda: gotify_push(
             gotify_server_url, gotify_app_token, msg_title, content
-        )  # 确保这里的逗号被移除或者下一行有新的推送方式
+        )
     }
 
     for platform, func in push_functions.items():
@@ -1706,6 +1710,9 @@ while True:
     ntfy_email = read_config_value(config, '推送配置', 'ntfy推送邮箱', "")
     gotify_server_url = read_config_value(config, '推送配置', 'gotify推送接口链接', "")
     gotify_app_token = read_config_value(config, '推送配置', 'gotify推送token', "")
+    onebot_api_url = read_config_value(config, '推送配置', 'onebot推送接口链接', "")
+    onebot_qq_user_id = read_config_value(config, '推送配置', 'onebot接收消息qq号', "")
+    onebot_token = read_config_value(config, '推送配置', 'onebot访问令牌', "")
     push_message_title = read_config_value(config, '推送配置', '自定义推送标题', "直播间状态更新通知")
     begin_push_message_text = read_config_value(config, '推送配置', '自定义开播推送内容', "")
     over_push_message_text = read_config_value(config, '推送配置', '自定义关播推送内容', "")

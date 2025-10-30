@@ -178,6 +178,7 @@
                         {% if key == '直播状态推送渠道' %}
                         <select id="{{ key }}" name="{{ key }}" style="height: 38px; width: 200px;">
                             <option value="">请选择</option>
+                            <option value="OneBot" {% if value == 'OneBot' %}selected{% endif %}>OneBot</option>
                             <option value="钉钉" {% if value == '钉钉' %}selected{% endif %}>钉钉</option>
                             <option value="微信" {% if value == '微信' %}selected{% endif %}>微信</option>
                             <option value="Bark" {% if value == 'Bark' %}selected{% endif %}>Bark</option>
